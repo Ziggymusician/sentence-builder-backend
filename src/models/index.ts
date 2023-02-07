@@ -1,2 +1,3 @@
-export * from './sentence-request';
+export * from './sentence';
 export * from './type';
+export * from './word';

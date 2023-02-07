@@ -1,7 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 
+import sequelize from './utils/database';
 import { routes } from './routes';
+
+// https://stackoverflow.com/questions/50379839/connection-java-mysql-public-key-retrieval-is-not-allowed
 
 const app: Express = express();
 const baseURL = '/api/v1';
@@ -20,6 +23,14 @@ app.use((req: Request, res: Response, next: NextFunction): void => {
 app.use(`${baseURL}/types`, typesRoutes);
 app.use(`${baseURL}/sentences`, sentencesRoutes);
 
-app.listen(3000, (): void => {
-    console.log('Server Running!');
-});
+(async (): Promise<void> => {
+    try {
+        await sequelize.sync({ force: true });
+
+        app.listen(3000, (): void => {
+            console.log('Server Running!');
+        });
+    } catch (err) {
+        console.error(err);
+    }
+})();

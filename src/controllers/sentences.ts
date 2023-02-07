@@ -1,17 +1,33 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { SentenceRequest } from '../models';
+import { ISentenceRequest } from '../interfaces';
+import { Sentence } from '../models';
 
 export const getSentences = (req: Request, res: Response, next: NextFunction): void => {
-    res.status(200).json([
-       "Today it's so hot I can't cope",
-       "Life just sucks sometimes",
-       "Who do you think you are?",
-       "There could only be one, ME!!"
-    ]);
+    Sentence.findAll({ attributes: ['sentence', 'sentence'] })
+        .then((results) => {
+            res.status(200).json({ sentences: results });
+        })
+        .catch(err => {
+            res.status(404).json({ message: 'No Sentences found' });
+            console.log(err);
+        });
 };
 
 export const saveSentence = (req: Request, res: Response, next: NextFunction): void => {
-    const body = req.body as SentenceRequest;
-    res.status(200).json({ message: 'Success', payload: body });
+    const { sentence } = req.body as ISentenceRequest;
+
+    if (!sentence) {
+        res.status(400).json({ message: 'Please privide a Sentence' });
+        return;
+    }
+
+    Sentence.create({ sentence })
+        .then((results) => {
+            res.status(201).json({ message: 'Sentence Successfully Created' });
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to create the Sentence' });
+            console.log(err);
+        });
 };

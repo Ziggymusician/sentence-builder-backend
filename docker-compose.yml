@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # MySQL
+  database:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: sentence-builder-docker
+      MYSQL_USER: collen
+      MYSQL_PASSWORD: sentence.builder!123
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'no'
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # Backend API
+  sentence-builder-api:
+    container_name: backend
+    build: ./
+    command: npm run dev
+    working_dir: /usr/src/app
+    environment:
+      DB_USER: collen
+      DB_PASSWORD: sentence.builder!123
+      DB_NAME: sentence-builder-docker
+      DB_HOST: database
+    depends_on:
+      database:
+        condition: service_healthy
+    links:
+      - database
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/usr/src/app
