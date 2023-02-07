@@ -31,6 +31,7 @@ app.use(`${baseURL}/sentences`, sentencesRoutes);
             console.log('Server Running!');
         });
     } catch (err) {
+        sequelize.close();
         console.error(err);
     }
 })();
