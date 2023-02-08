@@ -1,31 +1,40 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
-import { IType } from '../interfaces';
-import { Type, Word } from '../models';
+import { IType } from "../interfaces";
+import { Type, Word } from "../models";
 
-export const getTypes  = (req: Request, res: Response, next: NextFunction): void => {
-    Type.findAll()
-        .then((response) => {
-            const types: IType[] = response.map(({ id, value }) => ({ id, value }));
-            res.status(200).json({ types });
-        }).catch(err => {
-            res.status(404).json({ error: 'No types found' });
-            console.log(err);
-        });  
+export const getTypes = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  Type.findAll()
+    .then((response) => {
+      const types: IType[] = response.map(({ id, value }) => ({ id, value }));
+      res.status(200).json({ types });
+    })
+    .catch((err) => {
+      res.status(404).json({ error: "No types found" });
+      console.log(err);
+    });
 };
 
-export const getTypeWords = (req: Request, res: Response, next: NextFunction): void => {
-    const typeId = req.params.id;
-    // const typeObj = Type.findByPk(typeId);
-    // typeObj.getWords()
+export const getTypeWords = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const typeId = req.params.id;
+  // const typeObj = Type.findByPk(typeId);
+  // typeObj.getWords()
 
-    Word.findAll({ where: { typeId } })
-        .then((results) => {
-            const words = results.map(({ word }) => ({ word }));
-            res.status(200).json({ words });
-        })
-        .catch(err => { 
-            res.status(404).json({ error: `No words found with typeId: ${typeId}` });
-            console.log(err);
-        });
+  Word.findAll({ where: { typeId } })
+    .then((results) => {
+      const words = results.map(({ word }) => word);
+      res.status(200).json({ words });
+    })
+    .catch((err) => {
+      res.status(404).json({ error: `No words found with typeId: ${typeId}` });
+      console.log(err);
+    });
 };
