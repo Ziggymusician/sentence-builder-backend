@@ -15,7 +15,6 @@ export const getTypes = (
     })
     .catch((err) => {
       res.status(404).json({ error: "No types found" });
-      console.log(err);
     });
 };
 
@@ -25,8 +24,6 @@ export const getTypeWords = (
   next: NextFunction
 ): void => {
   const typeId = req.params.id;
-  // const typeObj = Type.findByPk(typeId);
-  // typeObj.getWords()
 
   Word.findAll({ where: { typeId } })
     .then((results) => {
@@ -35,6 +32,5 @@ export const getTypeWords = (
     })
     .catch((err) => {
       res.status(404).json({ error: `No words found with typeId: ${typeId}` });
-      console.log(err);
     });
 };

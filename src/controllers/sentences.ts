@@ -8,13 +8,15 @@ export const getSentences = (
   res: Response,
   next: NextFunction
 ): void => {
-  Sentence.findAll({ attributes: ["sentence", "sentence"] })
+  Sentence.findAll({
+    attributes: ["id", "sentence"],
+    order: [["id", "DESC"]],
+  })
     .then((results) => {
       res.status(200).json({ sentences: results.map((res) => res.sentence) });
     })
     .catch((err) => {
       res.status(404).json({ message: "No Sentences found" });
-      console.log(err);
     });
 };
 
@@ -36,6 +38,5 @@ export const saveSentence = (
     })
     .catch((err) => {
       res.status(500).json({ message: "Failed to create the Sentence" });
-      console.log(err);
     });
 };
