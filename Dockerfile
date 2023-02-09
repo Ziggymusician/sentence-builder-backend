@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY ./package*.json ./
 
+RUN npm install -g nodemon ts-node
 RUN npm install
 # For production build
 # RUN npm ci --only=production
